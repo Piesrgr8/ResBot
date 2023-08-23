@@ -5,7 +5,7 @@ const fs = require("fs");
 require("dotenv").config();
 
 // Create a new client instance
-const client = new Client({
+global.client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
