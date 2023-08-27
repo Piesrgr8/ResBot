@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-const {GatewayIntentBits, Client, Collection, Routes, ActivityType} = require("discord.js");
+const {GatewayIntentBits, Client, Collection, Routes, ActivityType, Events} = require("discord.js");
 const path = require('node:path');
 const fs = require("fs");
 require("dotenv").config();
@@ -53,7 +53,7 @@ client.on("ready", () => {
 // 	}
 // })();
 
-client.on("interactionCreate", async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
     if(interaction.isChatInputCommand()) {
         const command = client.commands.get(interaction.commandName);
 
@@ -67,6 +67,46 @@ client.on("interactionCreate", async interaction => {
         }
     }
 });
+
+client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isModalSubmit()) return;
+
+    if (interaction.customId === 'report') {
+        const channel = client.channels.cache.get("1143712926654541865");
+        const reportType = interaction.fields.getTextInputValue('reportType');
+        const reportProblem = interaction.fields.getTextInputValue('reportProblem');
+        const reportDesc = interaction.fields.getTextInputValue('reportDesc');
+        const embedMessage = {
+            type: `rich`,
+            title: `${interaction.user.username} has submitted a report!`,
+            description: `Full details of the report are as follows.`,
+            color: 0xFF0000,
+            fields: [
+                {
+                  name: `What/who are you reporting in this form?`,
+                  value: `${reportType}`,
+                  inline: true
+                },
+                {
+                  name: `What is the issue that you're reporting?`,
+                  value: `${reportProblem}`,
+                  inline: true
+                },
+                {
+                  name: `Describe the issue as much as possible!`,
+                  value: `${reportDesc}`,
+                  inline: false
+                }],
+            thumbnail: {
+              url: `https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Circle-icons-clipboard.svg/1200px-Circle-icons-clipboard.svg.png`,
+              height: null,
+              width: null
+            }
+          };
+        channel.send({embeds: [embedMessage]});
+        await interaction.reply({ content: "Your report has been recieved! We will work on this very shortly!", ephemeral: true })
+    }
+})
 
 // Login to Discord with your client's token
 client.login(process.env.TOKEN);

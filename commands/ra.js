@@ -15,7 +15,7 @@ module.exports = {
             type: `rich`,
             title: `${interaction.user.username} calls for an RA.`,
             description: `${message}`,
-            color: 0x00FFFF,
+            color: 0xFFE900,
             thumbnail: {
               url: `https://icons-for-free.com/iconfiles/png/512/attention+error+warining+icon-1320168050477798031.png`,
               height: null,
